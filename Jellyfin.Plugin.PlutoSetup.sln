@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jellyfin.Plugin.PlutoSetup", "Jellyfin.Plugin.PlutoSetup\Jellyfin.Plugin.PlutoSetup.csproj", "{14D859B4-FF04-4D4F-A729-EE1248D2DB7A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jellyfin.Plugin.PlutoSetup.Tests", "Jellyfin.Plugin.PlutoSetup.Tests\Jellyfin.Plugin.PlutoSetup.Tests.csproj", "{8565E733-0E00-4C7A-930F-23D86440719B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{14D859B4-FF04-4D4F-A729-EE1248D2DB7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14D859B4-FF04-4D4F-A729-EE1248D2DB7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14D859B4-FF04-4D4F-A729-EE1248D2DB7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14D859B4-FF04-4D4F-A729-EE1248D2DB7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8565E733-0E00-4C7A-930F-23D86440719B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8565E733-0E00-4C7A-930F-23D86440719B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8565E733-0E00-4C7A-930F-23D86440719B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8565E733-0E00-4C7A-930F-23D86440719B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

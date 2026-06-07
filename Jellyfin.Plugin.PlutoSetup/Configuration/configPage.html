@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Pluto TV Auto Tuner</title>
+</head>
+<body>
+    <div id="PlutoSetupConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-select">
+        <div data-role="content">
+            <div class="content-primary">
+                <form id="PlutoSetupConfigForm">
+                    <div class="sectionTitleContainer">
+                        <h2 class="sectionTitle">Pluto TV Auto Tuner</h2>
+                    </div>
+
+                    <div class="selectContainer">
+                        <label class="selectLabel" for="plutoMode">Mode selector</label>
+                        <select is="emby-select" id="plutoMode" class="emby-select-withcolor emby-select">
+                            <option value="HostedNoDocker">Hosted no-Docker</option>
+                            <option value="DockerHelper">Optional Docker helper</option>
+                            <option value="NativeNoDocker">Native no-Docker</option>
+                        </select>
+                        <div id="modeDescription" class="fieldDescription"></div>
+                    </div>
+
+                    <div class="sectionTitleContainer">
+                        <h2 class="sectionTitle">Your Pluto sign-in info</h2>
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="plutoUserName">User Name/Email</label>
+                        <input id="plutoUserName" type="text" is="emby-input" autocomplete="username" />
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="plutoPassword">Pluto password</label>
+                        <input id="plutoPassword" type="password" is="emby-input" autocomplete="current-password" />
+                    </div>
+                    <div class="fieldDescription">You must have a free Pluto TV account for this to work.</div>
+                    <div id="credentialModeNote" class="fieldDescription"></div>
+
+                    <div class="inputContainer hostedOnly">
+                        <label class="inputLabel inputLabelUnfocused" for="hostedM3uUrl">Hosted M3U URL override</label>
+                        <input id="hostedM3uUrl" type="url" is="emby-input" />
+                        <div class="fieldDescription">Default third-party URL: https://pluto.freechannels.me/playlist.m3u</div>
+                    </div>
+
+                    <div class="inputContainer hostedOnly">
+                        <label class="inputLabel inputLabelUnfocused" for="hostedXmltvUrl">Hosted XMLTV URL override</label>
+                        <input id="hostedXmltvUrl" type="url" is="emby-input" />
+                        <div class="fieldDescription">Default third-party URL: https://pluto.freechannels.me/epg.xml</div>
+                    </div>
+
+                    <div class="selectContainer dockerNativeOnly">
+                        <label class="selectLabel" for="ipAddress">IP address dropdown</label>
+                        <select is="emby-select" id="ipAddress" class="emby-select-withcolor emby-select"></select>
+                    </div>
+
+                    <div class="inputContainer dockerNativeOnly">
+                        <label class="inputLabel inputLabelUnfocused" for="manualHostOverride">Manual host/IP override</label>
+                        <input id="manualHostOverride" type="text" is="emby-input" />
+                    </div>
+
+                    <div class="selectContainer dockerOnly">
+                        <label class="selectLabel" for="dockerPort">Optional Docker/external port dropdown</label>
+                        <select is="emby-select" id="dockerPort" class="emby-select-withcolor emby-select"></select>
+                    </div>
+
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="startChannelNumber">START channel number</label>
+                        <input id="startChannelNumber" type="number" min="1" max="999999" value="10000" is="emby-input" />
+                        <div id="startDescription" class="fieldDescription"></div>
+                    </div>
+
+                    <div class="inputContainer nativeOnly">
+                        <label class="inputLabel inputLabelUnfocused" for="nativeUrlPreview">Jellyfin-served URL preview</label>
+                        <input id="nativeUrlPreview" type="text" is="emby-input" readonly />
+                    </div>
+
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="generatedM3uUrl">Generated M3U URL preview</label>
+                        <input id="generatedM3uUrl" type="text" is="emby-input" readonly />
+                    </div>
+
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="generatedXmltvUrl">Generated XMLTV URL preview</label>
+                        <input id="generatedXmltvUrl" type="text" is="emby-input" readonly />
+                    </div>
+
+                    <div class="selectContainer dockerOnly">
+                        <label class="selectLabel" for="dockerShell">Docker command shell</label>
+                        <select is="emby-select" id="dockerShell" class="emby-select-withcolor emby-select">
+                            <option value="bash">Bash/Linux/macOS</option>
+                            <option value="powershell">Windows PowerShell</option>
+                            <option value="cmd">Windows CMD</option>
+                        </select>
+                    </div>
+
+                    <div class="inputContainer dockerOnly">
+                        <label class="inputLabel inputLabelUnfocused" for="dockerCommand">Optional Docker command</label>
+                        <textarea id="dockerCommand" class="emby-input" rows="5" readonly></textarea>
+                        <div id="dockerCommandMessage" class="fieldDescription"></div>
+                    </div>
+
+                    <div class="paperList" style="padding:1em;margin:1em 0;">
+                        <h3 class="sectionTitle">Status</h3>
+                        <div id="statusCards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.75em;"></div>
+                    </div>
+
+                    <div class="paperList" style="padding:1em;margin:1em 0;">
+                        <h3 class="sectionTitle">Manual setup</h3>
+                        <p>Step 1: Go to Dashboard &gt; Live TV &gt; Tuner Devices &gt; Add Tuner Device. Set Tuner Type to M3U Tuner. Paste the generated M3U URL into File or URL.</p>
+                        <p>Step 2: Go to Dashboard &gt; Live TV &gt; TV Guide Data Providers &gt; Add Provider. Select XMLTV. Paste the generated XMLTV URL into File or URL.</p>
+                        <p>Step 3: Save and refresh guide data.</p>
+                        <p>Step 4: Map channels if Jellyfin requires guide/channel mapping.</p>
+                    </div>
+
+                    <div>
+                        <button is="emby-button" type="submit" class="raised button-submit block emby-button">
+                            <span>Save Settings</span>
+                        </button>
+                        <button is="emby-button" type="button" id="validateUrls" class="raised emby-button">
+                            <span>Validate URLs</span>
+                        </button>
+                        <button is="emby-button" type="button" id="nativeRefresh" class="raised emby-button" disabled>
+                            <span>Generate Native M3U/XMLTV Now</span>
+                        </button>
+                        <button is="emby-button" type="button" id="nativeTestLogin" class="raised emby-button" disabled>
+                            <span>Test Native Pluto Login</span>
+                        </button>
+                        <button is="emby-button" type="button" id="autoAdd" class="raised emby-button">
+                            <span>Auto-add to Jellyfin Live TV</span>
+                        </button>
+                        <button is="emby-button" type="button" id="copyM3u" class="raised emby-button">
+                            <span>Copy M3U URL</span>
+                        </button>
+                        <button is="emby-button" type="button" id="copyXmltv" class="raised emby-button">
+                            <span>Copy XMLTV URL</span>
+                        </button>
+                        <button is="emby-button" type="button" id="showDocker" class="raised emby-button">
+                            <span>Show Optional Docker Command</span>
+                        </button>
+                        <button is="emby-button" type="button" id="copyDocker" class="raised emby-button">
+                            <span>Copy Docker Command</span>
+                        </button>
+                        <button is="emby-button" type="button" id="testDocker" class="raised emby-button">
+                            <span>Test Optional Docker URL</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script type="text/javascript">
+            (function () {
+                var page = document.querySelector('#PlutoSetupConfigPage');
+                var lastSystemInfo = null;
+                var lastDockerCommands = null;
+
+                function apiUrl(path) {
+                    return ApiClient.getUrl('Plugins/PlutoSetup/' + path);
+                }
+
+                function ajaxJson(path, method, data) {
+                    return ApiClient.ajax({
+                        type: method,
+                        url: apiUrl(path),
+                        data: data ? JSON.stringify(data) : null,
+                        contentType: 'application/json',
+                        dataType: 'json'
+                    });
+                }
+
+                function getValue(id) {
+                    return document.querySelector('#' + id).value;
+                }
+
+                function setValue(id, value) {
+                    document.querySelector('#' + id).value = value || '';
+                }
+
+                function getConfigPayload() {
+                    return {
+                        mode: getValue('plutoMode'),
+                        hostedM3uUrl: getValue('hostedM3uUrl'),
+                        hostedXmltvUrl: getValue('hostedXmltvUrl'),
+                        selectedIpAddress: getValue('ipAddress'),
+                        manualHostOverride: getValue('manualHostOverride'),
+                        dockerPort: parseInt(getValue('dockerPort'), 10) || 8080,
+                        startChannelNumber: parseInt(getValue('startChannelNumber'), 10) || 10000
+                    };
+                }
+
+                function localAddressNeedsWarning(url) {
+                    return /^https?:\/\/(localhost|127\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|192\.168\.|169\.254\.)/i.test(url || '');
+                }
+
+                function renderStatusCard(title, value) {
+                    return '<div class="paperList" style="padding:.75em;"><div class="fieldDescription">' + title + '</div><div style="overflow-wrap:anywhere;">' + (value || 'Unknown') + '</div></div>';
+                }
+
+                function renderStatus(info) {
+                    var cards = [];
+                    var generated = info.generatedUrls || {};
+                    var config = info.config || {};
+                    var nativeAvailability = info.nativeAvailability || {};
+                    var autoAdd = info.autoAddAvailability || {};
+                    cards.push(renderStatusCard('Jellyfin Version', info.jellyfinVersion));
+                    cards.push(renderStatusCard('Server IP', (info.localIpv4Addresses || []).join(', ') || 'Unknown'));
+                    cards.push(renderStatusCard('Jellyfin Port', info.jellyfinPort));
+                    cards.push(renderStatusCard('Selected Mode', config.mode));
+                    cards.push(renderStatusCard('Optional External/Docker Port', config.dockerPort));
+                    cards.push(renderStatusCard('Credential/Auth Status', credentialStatus(config.mode)));
+                    cards.push(renderStatusCard('Existing Live TV Tuners', (info.existingTuners || []).length ? info.existingTuners.length : 'Not safely readable in this MVP'));
+                    cards.push(renderStatusCard('Existing Live TV Guide Providers', (info.existingGuideProviders || []).length ? info.existingGuideProviders.length : 'Review manually before adding XMLTV'));
+                    cards.push(renderStatusCard('Last Successful Validation', config.lastSuccessfulValidationUtc || 'None yet'));
+                    cards.push(renderStatusCard('Last Successful Native Refresh', nativeAvailability.isAvailable ? 'None yet' : 'Native unavailable'));
+                    cards.push(renderStatusCard('M3U URL', generated.m3uUrl));
+                    cards.push(renderStatusCard('XMLTV URL', generated.xmltvUrl));
+                    cards.push(renderStatusCard('Auto-add Availability', autoAdd.status + ': ' + autoAdd.message));
+                    document.querySelector('#statusCards').innerHTML = cards.join('');
+                }
+
+                function credentialStatus(mode) {
+                    if (mode === 'DockerHelper') {
+                        return 'Required for the optional Docker command only; password is not saved.';
+                    }
+
+                    if (mode === 'NativeNoDocker') {
+                        return 'Disabled until native Pluto login is implemented.';
+                    }
+
+                    return 'Not required or used in hosted no-Docker mode.';
+                }
+
+                function populatePorts(ports, selectedPort) {
+                    var portSelect = document.querySelector('#dockerPort');
+                    var values = ports && ports.length ? ports : [];
+                    if (values.indexOf(selectedPort) === -1) {
+                        values.unshift(selectedPort || 8080);
+                    }
+
+                    portSelect.innerHTML = values.map(function (port) {
+                        return '<option value="' + port + '">' + port + '</option>';
+                    }).join('');
+                    portSelect.value = selectedPort || 8080;
+                }
+
+                function populateIps(addresses, selectedIp) {
+                    var ipSelect = document.querySelector('#ipAddress');
+                    var values = addresses && addresses.length ? addresses : ['127.0.0.1'];
+                    ipSelect.innerHTML = values.map(function (ip) {
+                        return '<option value="' + ip + '">' + ip + '</option>';
+                    }).join('');
+                    ipSelect.value = selectedIp && values.indexOf(selectedIp) >= 0 ? selectedIp : values[0];
+                }
+
+                function applyModeUi() {
+                    var mode = getValue('plutoMode');
+                    var hosted = mode === 'HostedNoDocker';
+                    var docker = mode === 'DockerHelper';
+                    var nativeMode = mode === 'NativeNoDocker';
+
+                    document.querySelectorAll('.hostedOnly').forEach(function (item) { item.style.display = hosted ? '' : 'none'; });
+                    document.querySelectorAll('.dockerOnly').forEach(function (item) { item.style.display = docker ? '' : 'none'; });
+                    document.querySelectorAll('.nativeOnly').forEach(function (item) { item.style.display = nativeMode ? '' : 'none'; });
+                    document.querySelectorAll('.dockerNativeOnly').forEach(function (item) { item.style.display = hosted ? 'none' : ''; });
+
+                    document.querySelector('#plutoUserName').disabled = !docker;
+                    document.querySelector('#plutoPassword').disabled = !docker;
+                    document.querySelector('#startChannelNumber').disabled = hosted || nativeMode;
+                    document.querySelector('#showDocker').disabled = !docker;
+                    document.querySelector('#copyDocker').disabled = !docker;
+                    document.querySelector('#testDocker').disabled = !docker;
+                    document.querySelector('#nativeRefresh').disabled = true;
+                    document.querySelector('#nativeTestLogin').disabled = true;
+
+                    document.querySelector('#credentialModeNote').textContent = credentialStatus(mode);
+                    document.querySelector('#startDescription').textContent = hosted ? 'Not available in hosted mode.' : (nativeMode ? 'Unavailable until native playlist generation is implemented.' : 'Applies to optional Docker helper mode.');
+                    document.querySelector('#modeDescription').textContent = mode === 'HostedNoDocker'
+                        ? 'Uses third-party hosted URLs directly. The hosted provider says files update every 3 hours.'
+                        : (docker ? 'Generates commands and URLs for an optional external Docker container. The plugin does not run Docker.' : 'Disabled until real Pluto generation is implemented and tested.');
+                }
+
+                function applySystemInfo(info) {
+                    lastSystemInfo = info;
+                    var config = info.config || {};
+                    var generated = info.generatedUrls || {};
+                    setValue('plutoMode', config.mode);
+                    setValue('hostedM3uUrl', config.hostedM3uUrl);
+                    setValue('hostedXmltvUrl', config.hostedXmltvUrl);
+                    setValue('manualHostOverride', config.manualHostOverride);
+                    setValue('startChannelNumber', config.startChannelNumber || 10000);
+                    populateIps(info.localIpv4Addresses || [], config.selectedIpAddress);
+                    populatePorts(info.availableDockerPorts || [], config.dockerPort || 8080);
+                    setValue('generatedM3uUrl', generated.m3uUrl);
+                    setValue('generatedXmltvUrl', generated.xmltvUrl);
+                    setValue('nativeUrlPreview', generated.nativeTunerUrls && generated.nativeTunerUrls.length ? generated.nativeTunerUrls[0] : generated.m3uUrl);
+                    renderStatus(info);
+                    applyModeUi();
+                }
+
+                function loadPage() {
+                    Dashboard.showLoadingMsg();
+                    ajaxJson('SystemInfo', 'GET')
+                        .then(applySystemInfo)
+                        .finally(function () {
+                            document.querySelector('#plutoPassword').value = '';
+                            Dashboard.hideLoadingMsg();
+                        });
+                }
+
+                function copyText(value) {
+                    if (!value) {
+                        Dashboard.alert('Nothing to copy.');
+                        return Promise.resolve();
+                    }
+
+                    return navigator.clipboard.writeText(value).then(function () {
+                        Dashboard.alert('Copied.');
+                    });
+                }
+
+                function selectedDockerCommand(commands) {
+                    if (!commands) {
+                        return '';
+                    }
+
+                    var shell = getValue('dockerShell');
+                    if (shell === 'powershell') {
+                        return commands.powerShell;
+                    }
+
+                    if (shell === 'cmd') {
+                        return commands.cmd;
+                    }
+
+                    return commands.bash;
+                }
+
+                function showDockerCommand(reveal) {
+                    var payload = getConfigPayload();
+                    payload.userName = getValue('plutoUserName');
+                    payload.password = getValue('plutoPassword');
+                    payload.revealPassword = !!reveal;
+                    return ajaxJson('DockerCommandPreview', 'POST', payload).then(function (commands) {
+                        lastDockerCommands = commands;
+                        setValue('dockerCommand', selectedDockerCommand(commands));
+                        document.querySelector('#dockerCommandMessage').textContent = commands.message || '';
+                        return commands;
+                    });
+                }
+
+                page.addEventListener('pageshow', loadPage);
+
+                document.querySelector('#plutoMode').addEventListener('change', function () {
+                    applyModeUi();
+                    ajaxJson('SystemInfo', 'GET').then(function (info) {
+                        var payload = getConfigPayload();
+                        info.config.mode = payload.mode;
+                        applySystemInfo(info);
+                    });
+                });
+
+                document.querySelector('#dockerShell').addEventListener('change', function () {
+                    setValue('dockerCommand', selectedDockerCommand(lastDockerCommands));
+                });
+
+                document.querySelector('#PlutoSetupConfigForm').addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    Dashboard.showLoadingMsg();
+                    ajaxJson('SaveConfig', 'POST', getConfigPayload())
+                        .then(function () { return ajaxJson('SystemInfo', 'GET'); })
+                        .then(applySystemInfo)
+                        .then(function () { Dashboard.alert('Settings saved. Pluto password was not saved.'); })
+                        .finally(Dashboard.hideLoadingMsg);
+                    return false;
+                });
+
+                document.querySelector('#validateUrls').addEventListener('click', function () {
+                    var payload = getConfigPayload();
+                    var allowPrivate = localAddressNeedsWarning(getValue('generatedM3uUrl')) || localAddressNeedsWarning(getValue('generatedXmltvUrl'));
+                    payload.allowPrivateNetwork = allowPrivate ? confirm('This URL appears to point to a loopback or private network address. Validate it anyway?') : false;
+                    Dashboard.showLoadingMsg();
+                    ajaxJson('ValidateUrls', 'POST', payload)
+                        .then(function (result) {
+                            Dashboard.alert('M3U: ' + result.m3u.status + '. XMLTV: ' + result.xmltv.status + '.');
+                            return ajaxJson('SystemInfo', 'GET');
+                        })
+                        .then(applySystemInfo)
+                        .finally(Dashboard.hideLoadingMsg);
+                });
+
+                document.querySelector('#nativeRefresh').addEventListener('click', function () {
+                    ajaxJson('NativeRefresh', 'POST', {}).then(function (result) { Dashboard.alert(result.message); });
+                });
+
+                document.querySelector('#nativeTestLogin').addEventListener('click', function () {
+                    ajaxJson('NativeTestLogin', 'POST', {}).then(function (result) { Dashboard.alert(result.message); });
+                });
+
+                document.querySelector('#autoAdd').addEventListener('click', function () {
+                    ajaxJson('AutoAdd', 'POST', getConfigPayload()).then(function (result) {
+                        Dashboard.alert(result.message);
+                    });
+                });
+
+                document.querySelector('#copyM3u').addEventListener('click', function () {
+                    copyText(getValue('generatedM3uUrl'));
+                });
+
+                document.querySelector('#copyXmltv').addEventListener('click', function () {
+                    copyText(getValue('generatedXmltvUrl'));
+                });
+
+                document.querySelector('#showDocker').addEventListener('click', function () {
+                    showDockerCommand(false);
+                });
+
+                document.querySelector('#copyDocker').addEventListener('click', function () {
+                    showDockerCommand(true).then(function (commands) {
+                        if (commands.requiresCurrentPassword) {
+                            Dashboard.alert(commands.message);
+                            return;
+                        }
+
+                        copyText(selectedDockerCommand(commands));
+                    });
+                });
+
+                document.querySelector('#testDocker').addEventListener('click', function () {
+                    var payload = getConfigPayload();
+                    payload.confirmContainerIsRunning = confirm('Only test the optional Docker URL after you have started the container. Continue?');
+                    payload.allowPrivateNetwork = true;
+                    ajaxJson('TestDockerUrl', 'POST', payload).then(function (result) {
+                        Dashboard.alert('Docker M3U: ' + result.m3u.status + '. Docker XMLTV: ' + result.xmltv.status + '.');
+                    });
+                });
+            }());
+        </script>
+    </div>
+</body>
+</html>

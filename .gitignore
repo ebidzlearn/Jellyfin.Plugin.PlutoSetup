@@ -1,0 +1,18 @@
+bin/
+obj/
+*.user
+*.suo
+*.binlog
+.vs/
+
+# Keep release artifacts that are intentionally part of this plugin deliverable.
+!dist/
+!repository/
+!docs/
+!artifacts/
+
+# Keep the compiled plugin DLL, but avoid publishing debug/support files as source artifacts.
+artifacts/package/
+artifacts/publish/*.deps.json
+artifacts/publish/*.pdb
+artifacts/publish/*.xml
