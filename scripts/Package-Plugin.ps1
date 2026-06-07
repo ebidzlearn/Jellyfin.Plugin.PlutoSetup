@@ -24,7 +24,7 @@ $metadata = [ordered]@{
     description = "Prepare Pluto TV M3U tuner and XMLTV guide setup information for Jellyfin."
     owner = "local"
     overview = "Hosted Pluto M3U/XMLTV setup helper with optional Docker command generation."
-    targetAbi = "10.11.6.0"
+    targetAbi = "10.11.0.0"
     changelog = "Initial MVP with hosted no-Docker setup, optional Docker helper command generation, bounded URL validation, manual setup fallback, and disabled native mode that does not fake Pluto data."
 }
 
