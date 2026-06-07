@@ -32,7 +32,7 @@ $metadata = [ordered]@{
     owner = "local"
     overview = "Hosted Pluto M3U/XMLTV setup helper with optional Docker command generation."
     targetAbi = "10.11.0.0"
-    changelog = "Initial MVP with hosted no-Docker setup, optional Docker helper command generation, bounded URL validation, manual setup fallback, and disabled native mode that does not fake Pluto data."
+    changelog = "Adds original catalog and installed-plugin artwork, plus a GitHub Pages docs mirror for hosted repository files."
 }
 
 function Get-ProjectVersion {
@@ -50,6 +50,14 @@ function Remove-DirectoryIfExists {
 
     if (Test-Path -LiteralPath $Path) {
         Remove-Item -LiteralPath $Path -Recurse -Force
+    }
+}
+
+function Remove-PluginZips {
+    param([string]$Path)
+
+    if (Test-Path -LiteralPath $Path) {
+        Get-ChildItem -LiteralPath $Path -Filter "plutotvautotuner_*.zip" -File | Remove-Item -Force
     }
 }
 
@@ -106,6 +114,9 @@ New-Item -ItemType Directory -Path $repositoryReleasesDir -Force | Out-Null
 New-Item -ItemType Directory -Path $repositoryImagesDir -Force | Out-Null
 New-Item -ItemType Directory -Path $docsReleasesDir -Force | Out-Null
 New-Item -ItemType Directory -Path $docsImagesDir -Force | Out-Null
+Remove-PluginZips -Path $distDir
+Remove-PluginZips -Path $repositoryReleasesDir
+Remove-PluginZips -Path $docsReleasesDir
 
 Copy-Item -LiteralPath (Join-Path $publishDir "Jellyfin.Plugin.PlutoSetup.dll") -Destination $packageDir
 Copy-Item -LiteralPath (Join-Path $root "LICENSE") -Destination $packageDir

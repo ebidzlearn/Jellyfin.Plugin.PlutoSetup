@@ -4,17 +4,17 @@
         "guid":  "0d7f2f32-8b2d-4d3f-b6c4-90c5a0b49f1b",
         "name":  "Pluto TV Auto Tuner",
         "description":  "Prepare Pluto TV M3U tuner and XMLTV guide setup information for Jellyfin.",
-        "imageUrl":  "https://raw.githubusercontent.com/ebidzlearn/Jellyfin.Plugin.PlutoSetup/main/docs/images/pluto-tv-auto-tuner.png",
+        "imageUrl":  "https://ebidzlearn.github.io/Jellyfin.Plugin.PlutoSetup/images/pluto-tv-auto-tuner.png",
         "owner":  "local",
         "overview":  "Hosted Pluto M3U/XMLTV setup helper with optional Docker command generation.",
         "versions":  [
                          {
-                             "checksum":  "b8b5a38729ee433e546e62c66832093d",
-                             "changelog":  "Initial MVP with hosted no-Docker setup, optional Docker helper command generation, bounded URL validation, manual setup fallback, and disabled native mode that does not fake Pluto data.",
+                             "checksum":  "cc8cb5d9355e74d4793dcbbbd3a3ef85",
+                             "changelog":  "Adds original catalog and installed-plugin artwork, plus a GitHub Pages docs mirror for hosted repository files.",
                              "targetAbi":  "10.11.0.0",
-                             "sourceUrl":  "https://raw.githubusercontent.com/ebidzlearn/Jellyfin.Plugin.PlutoSetup/main/docs/releases/plutotvautotuner_0.1.0.0.zip",
-                             "timestamp":  "2026-06-07T12:38:33Z",
-                             "version":  "0.1.0.0"
+                             "sourceUrl":  "https://ebidzlearn.github.io/Jellyfin.Plugin.PlutoSetup/releases/plutotvautotuner_0.1.0.1.zip",
+                             "timestamp":  "2026-06-07T12:49:04Z",
+                             "version":  "0.1.0.1"
                          }
                      ]
     }

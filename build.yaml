@@ -1,7 +1,7 @@
 ---
 name: "Pluto TV Auto Tuner"
 guid: "0d7f2f32-8b2d-4d3f-b6c4-90c5a0b49f1b"
-version: "0.1.0.0"
+version: "0.1.0.1"
 targetAbi: "10.11.0.0"
 framework: "net9.0"
 overview: "Prepare Pluto TV M3U tuner and XMLTV guide setup information for Jellyfin."
@@ -13,10 +13,9 @@ description: >
   implemented and tested.
 category: "Live TV"
 owner: "local"
-imageUrl: "https://raw.githubusercontent.com/ebidzlearn/Jellyfin.Plugin.PlutoSetup/main/docs/images/pluto-tv-auto-tuner.png"
+imageUrl: "https://ebidzlearn.github.io/Jellyfin.Plugin.PlutoSetup/images/pluto-tv-auto-tuner.png"
 artifacts:
   - "Jellyfin.Plugin.PlutoSetup.dll"
 changelog: >
-  Initial MVP with hosted no-Docker setup, optional Docker helper command
-  generation, bounded URL validation, manual setup fallback, and disabled native
-  mode placeholders that do not fake Pluto data.
+  Adds original catalog and installed-plugin artwork, plus a GitHub Pages docs
+  mirror for hosted repository files.

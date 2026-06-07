@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.0.1
+
+- Added original Pluto TV Auto Tuner artwork to the hosted catalog manifest.
+- Bundled the artwork in the compiled plugin ZIP for installed plugin metadata.
+- Mirrored hosted repository files into the GitHub Pages `docs` folder.
+
 ## 0.1.0.0
 
 - Added hosted no-Docker MVP mode using configurable third-party M3U/XMLTV URLs.

@@ -12,6 +12,7 @@ $docsDir = Join-Path $root "docs"
 $manifestPath = Join-Path $repositoryDir "manifest.json"
 $docsManifestPath = Join-Path $docsDir "manifest.json"
 $verificationPath = Join-Path $repositoryDir "VERIFICATION.md"
+$docsVerificationPath = Join-Path $docsDir "VERIFICATION.md"
 $expectedGuid = "0d7f2f32-8b2d-4d3f-b6c4-90c5a0b49f1b"
 $expectedName = "Pluto TV Auto Tuner"
 $expectedTargetAbi = "10.11.0.0"
@@ -145,6 +146,7 @@ $repositoryManifestUrl
 Then open Dashboard > Plugins > Catalog and verify $expectedName appears.
 "@
 [IO.File]::WriteAllText($verificationPath, $verification, [Text.UTF8Encoding]::new($false))
+[IO.File]::WriteAllText($docsVerificationPath, $verification, [Text.UTF8Encoding]::new($false))
 
 [pscustomobject]@{
     Version = $version
@@ -153,4 +155,5 @@ Then open Dashboard > Plugins > Catalog and verify $expectedName appears.
     SourceUrl = $release.sourceUrl
     Checksum = $checksum
     Verification = $verificationPath
+    DocsVerification = $docsVerificationPath
 } | ConvertTo-Json

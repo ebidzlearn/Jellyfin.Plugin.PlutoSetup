@@ -73,12 +73,12 @@ Create the Release DLL, plugin ZIP, repository folder, GitHub Pages `docs` mirro
 Outputs:
 
 - `artifacts/publish/Jellyfin.Plugin.PlutoSetup.dll`
-- `dist/plutotvautotuner_0.1.0.0.zip`
+- `dist/plutotvautotuner_0.1.0.1.zip`
 - `repository/manifest.json`
-- `repository/releases/plutotvautotuner_0.1.0.0.zip`
+- `repository/releases/plutotvautotuner_0.1.0.1.zip`
 - `repository/images/pluto-tv-auto-tuner.png`
 - `docs/manifest.json`
-- `docs/releases/plutotvautotuner_0.1.0.0.zip`
+- `docs/releases/plutotvautotuner_0.1.0.1.zip`
 - `docs/images/pluto-tv-auto-tuner.png`
 - `repository/VERIFICATION.md`
 
@@ -92,7 +92,7 @@ For a manual install:
 2. Create a plugin folder under the Jellyfin data directory, for example:
    - Windows: `%LOCALAPPDATA%\jellyfin\plugins\Pluto TV Auto Tuner`
    - Linux: `/var/lib/jellyfin/plugins/Pluto TV Auto Tuner`
-3. Extract `dist/plutotvautotuner_0.1.0.0.zip` into that folder.
+3. Extract `dist/plutotvautotuner_0.1.0.1.zip` into that folder.
 4. Start Jellyfin.
 5. Open Dashboard > Plugins > Pluto TV Auto Tuner.
 
@@ -123,7 +123,7 @@ For GitHub Pages or another hosted static site, regenerate the package with the 
 Upload the full `repository` folder, or use the generated `docs` folder if GitHub Pages is configured to publish from `docs`. Jellyfin must be able to reach:
 
 - `https://YOUR_HOST/YOUR_REPOSITORY_PATH/manifest.json`
-- `https://YOUR_HOST/YOUR_REPOSITORY_PATH/releases/plutotvautotuner_0.1.0.0.zip`
+- `https://YOUR_HOST/YOUR_REPOSITORY_PATH/releases/plutotvautotuner_0.1.0.1.zip`
 - `https://YOUR_HOST/YOUR_REPOSITORY_PATH/images/pluto-tv-auto-tuner.png`
 
 ## Catalog Verification Checklist
