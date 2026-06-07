@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.0.2
+
+- Fixed the dashboard page reading Jellyfin plugin API responses with PascalCase JSON property names.
+- Restored generated URL previews, status values, validation alerts, and Docker command previews in Jellyfin's plugin UI.
+- Removed unavailable native generation/login action buttons and made auto-add visibly unavailable in the MVP UI.
+
 ## 0.1.0.1
 
 - Added original Pluto TV Auto Tuner artwork to the hosted catalog manifest.

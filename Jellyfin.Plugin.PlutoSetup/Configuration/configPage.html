@@ -18,7 +18,7 @@
                         <select is="emby-select" id="plutoMode" class="emby-select-withcolor emby-select">
                             <option value="HostedNoDocker">Hosted no-Docker</option>
                             <option value="DockerHelper">Optional Docker helper</option>
-                            <option value="NativeNoDocker">Native no-Docker</option>
+                            <option value="NativeNoDocker" disabled>Native no-Docker (unavailable)</option>
                         </select>
                         <div id="modeDescription" class="fieldDescription"></div>
                     </div>
@@ -120,14 +120,8 @@
                         <button is="emby-button" type="button" id="validateUrls" class="raised emby-button">
                             <span>Validate URLs</span>
                         </button>
-                        <button is="emby-button" type="button" id="nativeRefresh" class="raised emby-button" disabled>
-                            <span>Generate Native M3U/XMLTV Now</span>
-                        </button>
-                        <button is="emby-button" type="button" id="nativeTestLogin" class="raised emby-button" disabled>
-                            <span>Test Native Pluto Login</span>
-                        </button>
-                        <button is="emby-button" type="button" id="autoAdd" class="raised emby-button">
-                            <span>Auto-add to Jellyfin Live TV</span>
+                        <button is="emby-button" type="button" id="autoAdd" class="raised emby-button" disabled>
+                            <span>Auto-add unavailable</span>
                         </button>
                         <button is="emby-button" type="button" id="copyM3u" class="raised emby-button">
                             <span>Copy M3U URL</span>
@@ -168,6 +162,135 @@
                     });
                 }
 
+                function getProperty(obj, name) {
+                    if (!obj) {
+                        return undefined;
+                    }
+
+                    if (Object.prototype.hasOwnProperty.call(obj, name)) {
+                        return obj[name];
+                    }
+
+                    var pascalName = name.charAt(0).toUpperCase() + name.slice(1);
+                    if (Object.prototype.hasOwnProperty.call(obj, pascalName)) {
+                        return obj[pascalName];
+                    }
+
+                    return undefined;
+                }
+
+                function getText(obj, name, fallback) {
+                    var value = getProperty(obj, name);
+                    return value === undefined || value === null || value === '' ? fallback : value;
+                }
+
+                function getBoolean(obj, name) {
+                    return !!getProperty(obj, name);
+                }
+
+                function getArray(obj, name) {
+                    var value = getProperty(obj, name);
+                    return Array.isArray(value) ? value : [];
+                }
+
+                function escapeHtml(value) {
+                    return String(value === undefined || value === null || value === '' ? 'Unknown' : value)
+                        .replace(/&/g, '&amp;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;')
+                        .replace(/"/g, '&quot;')
+                        .replace(/'/g, '&#39;');
+                }
+
+                function normalizeMode(mode) {
+                    if (mode === 'DockerHelper' || mode === 'NativeNoDocker') {
+                        return mode;
+                    }
+
+                    return 'HostedNoDocker';
+                }
+
+                function normalizeValidationResult(result) {
+                    return {
+                        url: getText(result, 'url', ''),
+                        status: getText(result, 'status', 'Unknown'),
+                        message: getText(result, 'message', ''),
+                        isPrivateOrLocalAddress: getBoolean(result, 'isPrivateOrLocalAddress')
+                    };
+                }
+
+                function normalizeValidationResponse(result) {
+                    return {
+                        m3u: normalizeValidationResult(getProperty(result, 'm3u') || {}),
+                        xmltv: normalizeValidationResult(getProperty(result, 'xmltv') || {}),
+                        allReachable: getBoolean(result, 'allReachable'),
+                        lastSuccessfulValidationUtc: getProperty(result, 'lastSuccessfulValidationUtc') || null
+                    };
+                }
+
+                function normalizeDockerCommand(commands) {
+                    return {
+                        bash: getText(commands, 'bash', ''),
+                        powerShell: getText(commands, 'powerShell', ''),
+                        cmd: getText(commands, 'cmd', ''),
+                        passwordIncluded: getBoolean(commands, 'passwordIncluded'),
+                        requiresCurrentPassword: getBoolean(commands, 'requiresCurrentPassword'),
+                        message: getText(commands, 'message', '')
+                    };
+                }
+
+                function normalizeActionResult(result) {
+                    return {
+                        success: getBoolean(result, 'success'),
+                        status: getText(result, 'status', 'Unavailable'),
+                        message: getText(result, 'message', 'Action is unavailable.')
+                    };
+                }
+
+                function normalizeSystemInfo(info) {
+                    var config = getProperty(info, 'config') || {};
+                    var generated = getProperty(info, 'generatedUrls') || {};
+                    var nativeAvailability = getProperty(info, 'nativeAvailability') || {};
+                    var autoAdd = getProperty(info, 'autoAddAvailability') || {};
+
+                    return {
+                        jellyfinVersion: getText(info, 'jellyfinVersion', 'Unknown'),
+                        baseUrl: getText(info, 'baseUrl', ''),
+                        jellyfinPort: getProperty(info, 'jellyfinPort'),
+                        localIpv4Addresses: getArray(info, 'localIpv4Addresses'),
+                        config: {
+                            mode: normalizeMode(getText(config, 'mode', 'HostedNoDocker')),
+                            hostedM3uUrl: getText(config, 'hostedM3uUrl', ''),
+                            hostedXmltvUrl: getText(config, 'hostedXmltvUrl', ''),
+                            selectedIpAddress: getText(config, 'selectedIpAddress', ''),
+                            manualHostOverride: getText(config, 'manualHostOverride', ''),
+                            dockerPort: getProperty(config, 'dockerPort') || 8080,
+                            startChannelNumber: getProperty(config, 'startChannelNumber') || 10000,
+                            lastSuccessfulValidationUtc: getProperty(config, 'lastSuccessfulValidationUtc')
+                        },
+                        generatedUrls: {
+                            m3uUrl: getText(generated, 'm3uUrl', ''),
+                            xmltvUrl: getText(generated, 'xmltvUrl', ''),
+                            dockerTunerUrls: getArray(generated, 'dockerTunerUrls'),
+                            nativeTunerUrls: getArray(generated, 'nativeTunerUrls'),
+                            modeNote: getText(generated, 'modeNote', '')
+                        },
+                        nativeAvailability: {
+                            isAvailable: getBoolean(nativeAvailability, 'isAvailable'),
+                            status: getText(nativeAvailability, 'status', 'Unavailable'),
+                            message: getText(nativeAvailability, 'message', 'Native no-Docker mode is unavailable.')
+                        },
+                        autoAddAvailability: {
+                            isAvailable: getBoolean(autoAdd, 'isAvailable'),
+                            status: getText(autoAdd, 'status', 'Unavailable'),
+                            message: getText(autoAdd, 'message', 'Safe Jellyfin Live TV auto-add support is not enabled by this MVP.')
+                        },
+                        existingTuners: getArray(info, 'existingTuners'),
+                        existingGuideProviders: getArray(info, 'existingGuideProviders'),
+                        availableDockerPorts: getArray(info, 'availableDockerPorts')
+                    };
+                }
+
                 function getValue(id) {
                     return document.querySelector('#' + id).value;
                 }
@@ -178,7 +301,7 @@
 
                 function getConfigPayload() {
                     return {
-                        mode: getValue('plutoMode'),
+                        mode: normalizeMode(getValue('plutoMode')),
                         hostedM3uUrl: getValue('hostedM3uUrl'),
                         hostedXmltvUrl: getValue('hostedXmltvUrl'),
                         selectedIpAddress: getValue('ipAddress'),
@@ -193,7 +316,7 @@
                 }
 
                 function renderStatusCard(title, value) {
-                    return '<div class="paperList" style="padding:.75em;"><div class="fieldDescription">' + title + '</div><div style="overflow-wrap:anywhere;">' + (value || 'Unknown') + '</div></div>';
+                    return '<div class="paperList" style="padding:.75em;"><div class="fieldDescription">' + escapeHtml(title) + '</div><div style="overflow-wrap:anywhere;">' + escapeHtml(value) + '</div></div>';
                 }
 
                 function renderStatus(info) {
@@ -203,15 +326,15 @@
                     var nativeAvailability = info.nativeAvailability || {};
                     var autoAdd = info.autoAddAvailability || {};
                     cards.push(renderStatusCard('Jellyfin Version', info.jellyfinVersion));
-                    cards.push(renderStatusCard('Server IP', (info.localIpv4Addresses || []).join(', ') || 'Unknown'));
+                    cards.push(renderStatusCard('Server IP', info.localIpv4Addresses.join(', ') || 'Unknown'));
                     cards.push(renderStatusCard('Jellyfin Port', info.jellyfinPort));
                     cards.push(renderStatusCard('Selected Mode', config.mode));
                     cards.push(renderStatusCard('Optional External/Docker Port', config.dockerPort));
                     cards.push(renderStatusCard('Credential/Auth Status', credentialStatus(config.mode)));
-                    cards.push(renderStatusCard('Existing Live TV Tuners', (info.existingTuners || []).length ? info.existingTuners.length : 'Not safely readable in this MVP'));
-                    cards.push(renderStatusCard('Existing Live TV Guide Providers', (info.existingGuideProviders || []).length ? info.existingGuideProviders.length : 'Review manually before adding XMLTV'));
+                    cards.push(renderStatusCard('Existing Live TV Tuners', info.existingTuners.length ? info.existingTuners.length : 'Not safely readable in this MVP'));
+                    cards.push(renderStatusCard('Existing Live TV Guide Providers', info.existingGuideProviders.length ? info.existingGuideProviders.length : 'Review manually before adding XMLTV'));
                     cards.push(renderStatusCard('Last Successful Validation', config.lastSuccessfulValidationUtc || 'None yet'));
-                    cards.push(renderStatusCard('Last Successful Native Refresh', nativeAvailability.isAvailable ? 'None yet' : 'Native unavailable'));
+                    cards.push(renderStatusCard('Native no-Docker', nativeAvailability.status + ': ' + nativeAvailability.message));
                     cards.push(renderStatusCard('M3U URL', generated.m3uUrl));
                     cards.push(renderStatusCard('XMLTV URL', generated.xmltvUrl));
                     cards.push(renderStatusCard('Auto-add Availability', autoAdd.status + ': ' + autoAdd.message));
@@ -269,8 +392,8 @@
                     document.querySelector('#showDocker').disabled = !docker;
                     document.querySelector('#copyDocker').disabled = !docker;
                     document.querySelector('#testDocker').disabled = !docker;
-                    document.querySelector('#nativeRefresh').disabled = true;
-                    document.querySelector('#nativeTestLogin').disabled = true;
+                    document.querySelector('#validateUrls').disabled = nativeMode;
+                    document.querySelector('#autoAdd').disabled = true;
 
                     document.querySelector('#credentialModeNote').textContent = credentialStatus(mode);
                     document.querySelector('#startDescription').textContent = hosted ? 'Not available in hosted mode.' : (nativeMode ? 'Unavailable until native playlist generation is implemented.' : 'Applies to optional Docker helper mode.');
@@ -280,6 +403,7 @@
                 }
 
                 function applySystemInfo(info) {
+                    info = normalizeSystemInfo(info);
                     lastSystemInfo = info;
                     var config = info.config || {};
                     var generated = info.generatedUrls || {};
@@ -341,6 +465,7 @@
                     payload.password = getValue('plutoPassword');
                     payload.revealPassword = !!reveal;
                     return ajaxJson('DockerCommandPreview', 'POST', payload).then(function (commands) {
+                        commands = normalizeDockerCommand(commands);
                         lastDockerCommands = commands;
                         setValue('dockerCommand', selectedDockerCommand(commands));
                         document.querySelector('#dockerCommandMessage').textContent = commands.message || '';
@@ -353,6 +478,7 @@
                 document.querySelector('#plutoMode').addEventListener('change', function () {
                     applyModeUi();
                     ajaxJson('SystemInfo', 'GET').then(function (info) {
+                        info = normalizeSystemInfo(info);
                         var payload = getConfigPayload();
                         info.config.mode = payload.mode;
                         applySystemInfo(info);
@@ -381,6 +507,7 @@
                     Dashboard.showLoadingMsg();
                     ajaxJson('ValidateUrls', 'POST', payload)
                         .then(function (result) {
+                            result = normalizeValidationResponse(result);
                             Dashboard.alert('M3U: ' + result.m3u.status + '. XMLTV: ' + result.xmltv.status + '.');
                             return ajaxJson('SystemInfo', 'GET');
                         })
@@ -388,16 +515,9 @@
                         .finally(Dashboard.hideLoadingMsg);
                 });
 
-                document.querySelector('#nativeRefresh').addEventListener('click', function () {
-                    ajaxJson('NativeRefresh', 'POST', {}).then(function (result) { Dashboard.alert(result.message); });
-                });
-
-                document.querySelector('#nativeTestLogin').addEventListener('click', function () {
-                    ajaxJson('NativeTestLogin', 'POST', {}).then(function (result) { Dashboard.alert(result.message); });
-                });
-
                 document.querySelector('#autoAdd').addEventListener('click', function () {
                     ajaxJson('AutoAdd', 'POST', getConfigPayload()).then(function (result) {
+                        result = normalizeActionResult(result);
                         Dashboard.alert(result.message);
                     });
                 });
@@ -430,6 +550,7 @@
                     payload.confirmContainerIsRunning = confirm('Only test the optional Docker URL after you have started the container. Continue?');
                     payload.allowPrivateNetwork = true;
                     ajaxJson('TestDockerUrl', 'POST', payload).then(function (result) {
+                        result = normalizeValidationResponse(result);
                         Dashboard.alert('Docker M3U: ' + result.m3u.status + '. Docker XMLTV: ' + result.xmltv.status + '.');
                     });
                 });

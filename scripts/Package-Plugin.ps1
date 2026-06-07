@@ -32,7 +32,7 @@ $metadata = [ordered]@{
     owner = "local"
     overview = "Hosted Pluto M3U/XMLTV setup helper with optional Docker command generation."
     targetAbi = "10.11.0.0"
-    changelog = "Adds original catalog and installed-plugin artwork, plus a GitHub Pages docs mirror for hosted repository files."
+    changelog = "Fixes dashboard JSON response handling in Jellyfin, restores generated URL previews and validation alerts, and marks unavailable MVP actions clearly."
 }
 
 function Get-ProjectVersion {
