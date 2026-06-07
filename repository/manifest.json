@@ -8,11 +8,11 @@
         "overview":  "Hosted Pluto M3U/XMLTV setup helper with optional Docker command generation.",
         "versions":  [
                          {
-                             "checksum":  "d06968dc5865f5d609dc4b8242d43e07",
+                             "checksum":  "2d2e072cc53bf9b2a37b757695539b79",
                              "changelog":  "Initial MVP with hosted no-Docker setup, optional Docker helper command generation, bounded URL validation, manual setup fallback, and disabled native mode that does not fake Pluto data.",
-                             "targetAbi":  "10.11.11.0",
+                             "targetAbi":  "10.11.6.0",
                              "sourceUrl":  "https://ebidzlearn.github.io/Jellyfin.Plugin.PlutoSetup/releases/plutotvautotuner_0.1.0.0.zip",
-                             "timestamp":  "2026-06-07T12:01:57Z",
+                             "timestamp":  "2026-06-07T12:20:24Z",
                              "version":  "0.1.0.0"
                          }
                      ]

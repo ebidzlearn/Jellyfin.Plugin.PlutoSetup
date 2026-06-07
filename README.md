@@ -6,9 +6,9 @@ The default path is hosted no-Docker mode. It uses third-party hosted Pluto play
 
 ## Compatibility
 
-- Target Jellyfin ABI: 10.11.11.0 or newer in the 10.11 line.
+- Target Jellyfin ABI: 10.11.6.0 or newer in the 10.11 line.
 - Target framework: net9.0, matching current Jellyfin 10.11 package assets.
-- Jellyfin packages: Jellyfin.Controller 10.11.11 and Jellyfin.Model 10.11.11 with runtime assets excluded.
+- Jellyfin packages: Jellyfin.Controller 10.11.6 and Jellyfin.Model 10.11.6 with runtime assets excluded.
 - Build SDK: .NET 9 SDK.
 
 The current official plugin template was checked before this project was created. Jellyfin 10.11 NuGet packages target net9.0, so this plugin uses net9.0. If you need Jellyfin 10.9 compatibility, retarget to the 10.9.11 packages and net8.0.

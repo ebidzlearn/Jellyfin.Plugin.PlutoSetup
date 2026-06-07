@@ -12,7 +12,7 @@ $manifestPath = Join-Path $repositoryDir "manifest.json"
 $verificationPath = Join-Path $repositoryDir "VERIFICATION.md"
 $expectedGuid = "0d7f2f32-8b2d-4d3f-b6c4-90c5a0b49f1b"
 $expectedName = "Pluto TV Auto Tuner"
-$expectedTargetAbi = "10.11.11.0"
+$expectedTargetAbi = "10.11.6.0"
 
 function Assert-True {
     param(
