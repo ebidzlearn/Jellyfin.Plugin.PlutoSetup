@@ -14,8 +14,15 @@ $packageDir = Join-Path $root "artifacts\package"
 $distDir = Join-Path $root "dist"
 $repositoryDir = Join-Path $root "repository"
 $repositoryReleasesDir = Join-Path $repositoryDir "releases"
+$repositoryImagesDir = Join-Path $repositoryDir "images"
+$docsDir = Join-Path $root "docs"
+$docsReleasesDir = Join-Path $docsDir "releases"
+$docsImagesDir = Join-Path $docsDir "images"
 $rootManifestPath = Join-Path $root "manifest.json"
 $repositoryManifestPath = Join-Path $repositoryDir "manifest.json"
+$docsManifestPath = Join-Path $docsDir "manifest.json"
+$artworkFileName = "pluto-tv-auto-tuner.png"
+$artworkPath = Join-Path $root "assets\$artworkFileName"
 
 $metadata = [ordered]@{
     category = "Live TV"
@@ -67,6 +74,7 @@ function New-MetaJson {
         changelog = $metadata.changelog
         description = $metadata.description
         guid = $metadata.guid
+        imagePath = $artworkFileName
         name = $metadata.name
         overview = $metadata.overview
         owner = $metadata.owner
@@ -80,18 +88,30 @@ $version = Get-ProjectVersion
 $zipName = "plutotvautotuner_$version.zip"
 $zipPath = Join-Path $distDir $zipName
 $repositoryZipPath = Join-Path $repositoryReleasesDir $zipName
+$docsZipPath = Join-Path $docsReleasesDir $zipName
 $sourceUrl = "$($RepositoryBaseUrl.TrimEnd('/'))/releases/$zipName"
+$imageUrl = "$($RepositoryBaseUrl.TrimEnd('/'))/images/$artworkFileName"
 $timestamp = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
 
 & $DotNetPath publish $projectPath -c $Configuration -o $publishDir
+
+if (-not (Test-Path -LiteralPath $artworkPath)) {
+    throw "Artwork file was not found at $artworkPath."
+}
 
 Remove-DirectoryIfExists $packageDir
 New-Item -ItemType Directory -Path $packageDir | Out-Null
 New-Item -ItemType Directory -Path $distDir -Force | Out-Null
 New-Item -ItemType Directory -Path $repositoryReleasesDir -Force | Out-Null
+New-Item -ItemType Directory -Path $repositoryImagesDir -Force | Out-Null
+New-Item -ItemType Directory -Path $docsReleasesDir -Force | Out-Null
+New-Item -ItemType Directory -Path $docsImagesDir -Force | Out-Null
 
 Copy-Item -LiteralPath (Join-Path $publishDir "Jellyfin.Plugin.PlutoSetup.dll") -Destination $packageDir
 Copy-Item -LiteralPath (Join-Path $root "LICENSE") -Destination $packageDir
+Copy-Item -LiteralPath $artworkPath -Destination (Join-Path $packageDir $artworkFileName)
+Copy-Item -LiteralPath $artworkPath -Destination (Join-Path $repositoryImagesDir $artworkFileName) -Force
+Copy-Item -LiteralPath $artworkPath -Destination (Join-Path $docsImagesDir $artworkFileName) -Force
 Write-JsonFile -Value (New-MetaJson -Version $version -Timestamp $timestamp) -Path (Join-Path $packageDir "meta.json")
 
 if (Test-Path -LiteralPath $zipPath) {
@@ -100,6 +120,7 @@ if (Test-Path -LiteralPath $zipPath) {
 
 Compress-Archive -Path (Join-Path $packageDir "*") -DestinationPath $zipPath -CompressionLevel Optimal
 Copy-Item -LiteralPath $zipPath -Destination $repositoryZipPath -Force
+Copy-Item -LiteralPath $zipPath -Destination $docsZipPath -Force
 
 $checksum = (Get-FileHash -LiteralPath $zipPath -Algorithm MD5).Hash.ToLowerInvariant()
 $manifest = @(
@@ -108,6 +129,7 @@ $manifest = @(
         guid = $metadata.guid
         name = $metadata.name
         description = $metadata.description
+        imageUrl = $imageUrl
         owner = $metadata.owner
         overview = $metadata.overview
         versions = @(
@@ -125,6 +147,7 @@ $manifest = @(
 
 Write-JsonFile -Value $manifest -Path $rootManifestPath
 Write-JsonFile -Value $manifest -Path $repositoryManifestPath
+Write-JsonFile -Value $manifest -Path $docsManifestPath
 
 $indexHtml = @"
 <!doctype html>
@@ -141,12 +164,16 @@ $indexHtml = @"
 </html>
 "@
 [IO.File]::WriteAllText((Join-Path $repositoryDir "index.html"), $indexHtml, [Text.UTF8Encoding]::new($false))
+[IO.File]::WriteAllText((Join-Path $docsDir "index.html"), $indexHtml, [Text.UTF8Encoding]::new($false))
 
 [pscustomobject]@{
     Version = $version
     ZipPath = $zipPath
     RepositoryZipPath = $repositoryZipPath
+    DocsZipPath = $docsZipPath
     ManifestPath = $repositoryManifestPath
+    DocsManifestPath = $docsManifestPath
     SourceUrl = $sourceUrl
+    ImageUrl = $imageUrl
     Checksum = $checksum
 } | ConvertTo-Json

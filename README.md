@@ -63,7 +63,7 @@ If .NET 9 is not installed globally, use a local SDK path:
 
 JPRM was checked during development and was not available on this machine. The repository package is therefore created manually with the same manifest shape used by Jellyfin's hosted plugin repositories.
 
-Create the Release DLL, plugin ZIP, repository folder, checksum, `meta.json`, and `manifest.json`:
+Create the Release DLL, plugin ZIP, repository folder, GitHub Pages `docs` mirror, checksum, `meta.json`, artwork, and `manifest.json`:
 
 ```powershell
 .\scripts\Package-Plugin.ps1 -DotNetPath "$env:TEMP\dotnet9-sdk\dotnet.exe" -RepositoryBaseUrl "http://localhost:8097"
@@ -76,9 +76,13 @@ Outputs:
 - `dist/plutotvautotuner_0.1.0.0.zip`
 - `repository/manifest.json`
 - `repository/releases/plutotvautotuner_0.1.0.0.zip`
+- `repository/images/pluto-tv-auto-tuner.png`
+- `docs/manifest.json`
+- `docs/releases/plutotvautotuner_0.1.0.0.zip`
+- `docs/images/pluto-tv-auto-tuner.png`
 - `repository/VERIFICATION.md`
 
-The plugin ZIP contains only the Jellyfin runtime plugin payload: `Jellyfin.Plugin.PlutoSetup.dll`, `meta.json`, and `LICENSE`. It intentionally excludes source files, `obj`, `bin`, PDB files, XML docs, development scripts, test files, secrets, local paths, and user-specific settings.
+The plugin ZIP contains only the Jellyfin runtime plugin payload: `Jellyfin.Plugin.PlutoSetup.dll`, `meta.json`, `LICENSE`, and `pluto-tv-auto-tuner.png`. It intentionally excludes source files, `obj`, `bin`, PDB files, XML docs, development scripts, test files, secrets, local paths, and user-specific settings.
 
 ## Manual Local Install
 
@@ -88,13 +92,13 @@ For a manual install:
 2. Create a plugin folder under the Jellyfin data directory, for example:
    - Windows: `%LOCALAPPDATA%\jellyfin\plugins\Pluto TV Auto Tuner`
    - Linux: `/var/lib/jellyfin/plugins/Pluto TV Auto Tuner`
-3. Extract `dist/plutotvautotuner_0.1.0.0.zip` into that folder, or copy `artifacts/publish/Jellyfin.Plugin.PlutoSetup.dll` there.
+3. Extract `dist/plutotvautotuner_0.1.0.0.zip` into that folder.
 4. Start Jellyfin.
 5. Open Dashboard > Plugins > Pluto TV Auto Tuner.
 
 ## Repository-Based Install
 
-The `repository` folder is ready to serve from GitHub Pages or another static web host. The manifest `sourceUrl` must be an absolute HTTP/HTTPS URL that points to the compiled ZIP, not the source repository.
+The `repository` folder is ready to serve from GitHub Pages or another static web host. The package script also mirrors the same hosted files into `docs` for GitHub Pages setups that publish from the `docs` folder. The manifest `sourceUrl` must be an absolute HTTP/HTTPS URL that points to the compiled ZIP, not the source repository.
 
 For local HTTP verification on the same machine as Jellyfin:
 
@@ -116,10 +120,11 @@ For GitHub Pages or another hosted static site, regenerate the package with the 
 .\scripts\Test-Package.ps1 -RepositoryBaseUrl "https://YOUR_HOST/YOUR_REPOSITORY_PATH"
 ```
 
-Upload the full `repository` folder. Jellyfin must be able to reach both:
+Upload the full `repository` folder, or use the generated `docs` folder if GitHub Pages is configured to publish from `docs`. Jellyfin must be able to reach:
 
 - `https://YOUR_HOST/YOUR_REPOSITORY_PATH/manifest.json`
 - `https://YOUR_HOST/YOUR_REPOSITORY_PATH/releases/plutotvautotuner_0.1.0.0.zip`
+- `https://YOUR_HOST/YOUR_REPOSITORY_PATH/images/pluto-tv-auto-tuner.png`
 
 ## Catalog Verification Checklist
 
