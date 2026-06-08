@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.0.4
+
+- Added uninstall cleanup that removes older Pluto TV Auto Tuner version folders before Jellyfin removes the active plugin.
+- Marks stale version folders as deleted if Windows cannot delete them immediately, preventing older versions from reactivating after restart.
+
 ## 0.1.0.3
 
 - Moved dashboard action buttons under their related fields instead of grouping them at the bottom of the page.

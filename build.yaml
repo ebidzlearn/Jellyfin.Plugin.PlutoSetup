@@ -1,7 +1,7 @@
 ---
 name: "Pluto TV Auto Tuner"
 guid: "0d7f2f32-8b2d-4d3f-b6c4-90c5a0b49f1b"
-version: "0.1.0.3"
+version: "0.1.0.4"
 targetAbi: "10.11.0.0"
 framework: "net9.0"
 overview: "Prepare Pluto TV M3U tuner and XMLTV guide setup information for Jellyfin."
@@ -17,5 +17,5 @@ imageUrl: "https://ebidzlearn.github.io/Jellyfin.Plugin.PlutoSetup/images/pluto-
 artifacts:
   - "Jellyfin.Plugin.PlutoSetup.dll"
 changelog: >
-  Moves dashboard action buttons under their related fields so URL, Docker, and
-  save actions appear beside the controls they affect.
+  Adds uninstall cleanup for stale Pluto TV Auto Tuner version folders so older
+  plugin versions cannot reactivate after Jellyfin restarts.

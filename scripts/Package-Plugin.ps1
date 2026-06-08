@@ -32,7 +32,7 @@ $metadata = [ordered]@{
     owner = "local"
     overview = "Hosted Pluto M3U/XMLTV setup helper with optional Docker command generation."
     targetAbi = "10.11.0.0"
-    changelog = "Moves dashboard action buttons under their related fields so URL, Docker, and save actions appear beside the controls they affect."
+    changelog = "Adds uninstall cleanup for stale Pluto TV Auto Tuner version folders so older plugin versions cannot reactivate after Jellyfin restarts."
 }
 
 function Get-ProjectVersion {
