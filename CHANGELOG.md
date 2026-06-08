@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.0.3
+
+- Moved dashboard action buttons under their related fields instead of grouping them at the bottom of the page.
+- Placed M3U copy under the generated M3U preview, XMLTV copy and validation under the generated XMLTV preview, and Docker actions under the Docker command field.
+
 ## 0.1.0.2
 
 - Fixed the dashboard page reading Jellyfin plugin API responses with PascalCase JSON property names.

@@ -70,6 +70,12 @@
                         <div id="startDescription" class="fieldDescription"></div>
                     </div>
 
+                    <div style="margin:1em 0;">
+                        <button is="emby-button" type="submit" class="raised button-submit block emby-button">
+                            <span>Save Settings</span>
+                        </button>
+                    </div>
+
                     <div class="inputContainer nativeOnly">
                         <label class="inputLabel inputLabelUnfocused" for="nativeUrlPreview">Jellyfin-served URL preview</label>
                         <input id="nativeUrlPreview" type="text" is="emby-input" readonly />
@@ -78,11 +84,27 @@
                     <div class="inputContainer">
                         <label class="inputLabel inputLabelUnfocused" for="generatedM3uUrl">Generated M3U URL preview</label>
                         <input id="generatedM3uUrl" type="text" is="emby-input" readonly />
+                        <div style="display:flex;flex-wrap:wrap;gap:.75em;margin-top:.75em;">
+                            <button is="emby-button" type="button" id="copyM3u" class="raised emby-button">
+                                <span>Copy M3U URL</span>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="inputContainer">
                         <label class="inputLabel inputLabelUnfocused" for="generatedXmltvUrl">Generated XMLTV URL preview</label>
                         <input id="generatedXmltvUrl" type="text" is="emby-input" readonly />
+                        <div style="display:flex;flex-wrap:wrap;gap:.75em;margin-top:.75em;">
+                            <button is="emby-button" type="button" id="copyXmltv" class="raised emby-button">
+                                <span>Copy XMLTV URL</span>
+                            </button>
+                            <button is="emby-button" type="button" id="validateUrls" class="raised emby-button">
+                                <span>Validate URLs</span>
+                            </button>
+                            <button is="emby-button" type="button" id="autoAdd" class="raised emby-button" disabled>
+                                <span>Auto-add unavailable</span>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="selectContainer dockerOnly">
@@ -97,6 +119,17 @@
                     <div class="inputContainer dockerOnly">
                         <label class="inputLabel inputLabelUnfocused" for="dockerCommand">Optional Docker command</label>
                         <textarea id="dockerCommand" class="emby-input" rows="5" readonly></textarea>
+                        <div style="display:flex;flex-wrap:wrap;gap:.75em;margin-top:.75em;">
+                            <button is="emby-button" type="button" id="showDocker" class="raised emby-button">
+                                <span>Show Optional Docker Command</span>
+                            </button>
+                            <button is="emby-button" type="button" id="copyDocker" class="raised emby-button">
+                                <span>Copy Docker Command</span>
+                            </button>
+                            <button is="emby-button" type="button" id="testDocker" class="raised emby-button">
+                                <span>Test Optional Docker URL</span>
+                            </button>
+                        </div>
                         <div id="dockerCommandMessage" class="fieldDescription"></div>
                     </div>
 
@@ -113,32 +146,6 @@
                         <p>Step 4: Map channels if Jellyfin requires guide/channel mapping.</p>
                     </div>
 
-                    <div>
-                        <button is="emby-button" type="submit" class="raised button-submit block emby-button">
-                            <span>Save Settings</span>
-                        </button>
-                        <button is="emby-button" type="button" id="validateUrls" class="raised emby-button">
-                            <span>Validate URLs</span>
-                        </button>
-                        <button is="emby-button" type="button" id="autoAdd" class="raised emby-button" disabled>
-                            <span>Auto-add unavailable</span>
-                        </button>
-                        <button is="emby-button" type="button" id="copyM3u" class="raised emby-button">
-                            <span>Copy M3U URL</span>
-                        </button>
-                        <button is="emby-button" type="button" id="copyXmltv" class="raised emby-button">
-                            <span>Copy XMLTV URL</span>
-                        </button>
-                        <button is="emby-button" type="button" id="showDocker" class="raised emby-button">
-                            <span>Show Optional Docker Command</span>
-                        </button>
-                        <button is="emby-button" type="button" id="copyDocker" class="raised emby-button">
-                            <span>Copy Docker Command</span>
-                        </button>
-                        <button is="emby-button" type="button" id="testDocker" class="raised emby-button">
-                            <span>Test Optional Docker URL</span>
-                        </button>
-                    </div>
                 </form>
             </div>
         </div>
